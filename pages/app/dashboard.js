@@ -1,8 +1,9 @@
+import { Navbar } from "@/components/navbar";
+import { Sidebar } from "@/components/sidebar";
 import { upload } from "@spheron/browser-upload";
 import { Web3Storage } from "web3.storage";
 
-export function Dashboard() {
-
+export default function Dashboard() {
     // ---------- web3.storage
 
     const web3StorageKey = process.env.NEXT_PUBLIC_WEB3STORAGE;
@@ -22,7 +23,7 @@ export function Dashboard() {
     };
 
     const uploadWithWeb3Storage = async (e) => {
-        const data = e.target.files[0]
+        const data = e.target.files[0];
         const files = [new File([data], "data.json")];
         try {
             const metaCID = await uploadToIPFS(files);
@@ -35,15 +36,14 @@ export function Dashboard() {
     };
 
     // ---------- spheron
-    
+
     const uploadWithSpheron = async (e) => {
-        
         const response = await fetch(`http://localhost:3000/api/hello`); // get the temporary access token from server
-        console.log(response)
+        console.log(response);
         const resJson = await response.json();
         const token = resJson.uploadToken;
 
-        const files = e.target.files
+        const files = e.target.files;
 
         let currentlyUploaded = 0;
 
@@ -65,13 +65,13 @@ export function Dashboard() {
 
     return (
         <div>
-            test
+            <Navbar />
             <div>
-                <input type="file" onChange={uploadWithSpheron} />
-                <input type="file" onChange={uploadWithWeb3Storage} />
-                {/* <input type="name" placeholder="paste a link" onChange={uploadWithSpheron}/> */}
-                {/* <button onClick={map}>Upload</button> */}
-                {/* <button onClick={map}>Upload</button> */}
+                <Sidebar />
+                <div>
+                    <button>Create</button>
+                    <input type="file" onChange={uploadWithWeb3Storage} />
+                </div>
             </div>
         </div>
     );

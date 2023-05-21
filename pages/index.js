@@ -1,10 +1,12 @@
 import { Dashboard } from "@/components/dashboard";
+import { HomeNavbar } from "@/components/homeNavbar";
 
 export default function Home() {
   return(
     <div>
-      test
-      <Dashboard />
+      <HomeNavbar />
+      homepage
+      {/* <Dashboard /> */}
     </div>
   )
 }
