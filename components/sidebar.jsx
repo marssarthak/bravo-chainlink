@@ -1,6 +1,14 @@
 import Link from "next/link";
+import { useRouter } from 'next/router';
 
 export const Sidebar = async () => {
+
+    const router = useRouter();
+
+    const isActive = (pathname) => {
+      return router.pathname === pathname;
+    };
+
     return (
         <div>
             <ul>

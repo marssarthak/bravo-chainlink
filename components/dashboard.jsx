@@ -3,7 +3,7 @@ import { Web3Storage } from "web3.storage";
 
 export function Dashboard() {
 
-    // ----------
+    // ---------- web3.storage
 
     const web3StorageKey = process.env.NEXT_PUBLIC_WEB3STORAGE;
 
@@ -34,7 +34,7 @@ export function Dashboard() {
         }
     };
 
-    // ----------
+    // ---------- spheron
     
     const uploadWithSpheron = async (e) => {
         
@@ -67,6 +67,7 @@ export function Dashboard() {
         <div>
             test
             <div>
+                <input type="file" onChange={uploadWithSpheron} />
                 <input type="file" onChange={uploadWithWeb3Storage} />
                 {/* <input type="name" placeholder="paste a link" onChange={uploadWithSpheron}/> */}
                 {/* <button onClick={map}>Upload</button> */}
