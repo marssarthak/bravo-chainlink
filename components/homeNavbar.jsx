@@ -4,7 +4,7 @@ export function HomeNavbar() {
 
     return (
         <div className="">
-            <ul className="flex p-4 gap-[70%] justify-center bg-black text-white">
+            <ul className="flex p-4 h-[75px] gap-[70%] justify-center bg-black text-white">
                 <li>
                     <div className="relative inline-block w-full text-left">
                         <Link
@@ -19,7 +19,7 @@ export function HomeNavbar() {
                     <div className="relative inline-block w-full text-left">
                         <Link
                             className="hover:opacity-75 lg:pl-5 lg:pr-5"
-                            href="/app"
+                            href="/app/dashboard"
                         >
                             Launch App
                         </Link>

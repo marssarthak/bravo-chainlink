@@ -5,7 +5,7 @@ export function Navbar() {
 
     return (
         <div>
-            <ul className="flex p-4 gap-[70%] justify-center bg-black text-white">
+            <ul className="flex p-4 gap-[70%] h-[75px] justify-center bg-black text-white">
                 <li>
                     <div className="relative inline-block w-full text-left">
                         <Link

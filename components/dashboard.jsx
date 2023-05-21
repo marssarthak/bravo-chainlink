@@ -41,14 +41,16 @@ export function Dashboard() {
         const response = await fetch(`http://localhost:3000/api/hello`); // get the temporary access token from server
         console.log(response)
         const resJson = await response.json();
+        console.log(resJson)
         const token = resJson.uploadToken;
 
-        const files = e.target.files
+        const files = e.target.files[0]
+        console.log(files)
 
         let currentlyUploaded = 0;
 
         const { uploadId, bucketId, protocolLink, dynamicLinks } = await upload(
-            files,
+            [files],
             {
                 token,
                 onChunkUploaded: (uploadedSize, totalSize) => {
