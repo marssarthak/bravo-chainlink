@@ -4,7 +4,7 @@ export function HomeNavbar() {
 
     return (
         <div className="">
-            <ul className="flex p-4 h-[75px] gap-[70%] justify-center bg-black text-white">
+            <ul className="flex p-4 h-[75px] gap-[70%] items-center justify-center bg-black text-white">
                 <li>
                     <div className="relative inline-block w-full text-left">
                         <Link
