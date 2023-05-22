@@ -42,7 +42,7 @@ export default function Dashboard() {
             <Navbar />
             <div className="flex">
                 <Sidebar />
-                <div className="flex flex-col">
+                <div className="flex flex-col p-4 sm:ml-64 mt-16">
                     <button>Manage</button>
                     <input type="file" onChange={uploadWithSpheron} />
                     <input
