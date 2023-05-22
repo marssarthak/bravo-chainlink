@@ -55,9 +55,7 @@ export default function Dashboard() {
 
         let currentlyUploaded = 0;
 
-        const { uploadId, bucketId, protocolLink, dynamicLinks } = await upload(
-            [files],
-            {
+        const { uploadId, bucketId, protocolLink, dynamicLinks } = await upload([files], {
                 token,
                 onChunkUploaded: (uploadedSize, totalSize) => {
                     currentlyUploaded += uploadedSize;
@@ -77,7 +75,7 @@ export default function Dashboard() {
             <div className="flex">
                 <Sidebar />
                 <div className="flex flex-col">
-                    <button>Create</button>
+                    <button>Manage</button>
                     <input type="file" onChange={uploadWithSpheron} />
                     <input
                         type="name"

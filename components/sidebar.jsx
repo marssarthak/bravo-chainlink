@@ -17,19 +17,29 @@ export function Sidebar() {
                     <div className="relative inline-block w-full text-left">
                         <Link
                             className="hover:opacity-75 lg:pl-5 lg:pr-5"
-                            href="/app/dashboard"
+                            href="/app/create"
                         >
-                            Dashboard
+                            Create
                         </Link>
                     </div>
                 </li>
-                <li className={isActive("/app/feature") ? "text-blue-500" : ""}>
+                <li className={isActive("/app/manage") ? "text-blue-500" : ""}>
                 <div className="relative inline-block w-full text-left">
                         <Link
                             className="hover:opacity-75 lg:pl-5 lg:pr-5"
-                            href="/app/feature"
+                            href="/app/manage"
                         >
-                            Other feature
+                            Manage
+                        </Link>
+                    </div>
+                </li>
+                <li className={isActive("/app/nfts") ? "text-blue-500" : ""}>
+                <div className="relative inline-block w-full text-left">
+                        <Link
+                            className="hover:opacity-75 lg:pl-5 lg:pr-5"
+                            href="/app/nfts"
+                        >
+                            Nfts
                         </Link>
                     </div>
                 </li>

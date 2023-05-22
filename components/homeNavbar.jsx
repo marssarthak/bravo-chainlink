@@ -19,7 +19,7 @@ export function HomeNavbar() {
                     <div className="relative inline-block w-full text-left">
                         <Link
                             className="hover:opacity-75 lg:pl-5 lg:pr-5"
-                            href="/app/dashboard"
+                            href="/app/manage"
                         >
                             Launch App
                         </Link>
