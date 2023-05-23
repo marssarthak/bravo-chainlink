@@ -27,5 +27,4 @@ const signer = provider.getSigner()
 
 const contract = new ethers.Contract(contractAddress, contractAbi.abi, provider)
 
-const data = await contract.getUserTable(input.toString());
-await data.wait();
+const data = await contract.getUserTable();
