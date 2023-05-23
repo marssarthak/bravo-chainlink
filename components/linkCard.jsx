@@ -30,6 +30,7 @@ export default function LinkCard({
   const [redirectLink, setRedirectLink] = useState("");
   const [loading, setLoading] = useState(false)
   const [price, setPrice] = useState("")
+  const [cid, setCid] = useState("")
 
   console.log(redirectLink)
   const lighthouseKey = process.env.NEXT_PUBLIC_LIGHTHOUSE_KEY;
@@ -70,7 +71,7 @@ const uploadFileEncrypted = async (e) => {
     applyAccessConditions(response.data.Hash);
     const linkId = await getLinkoId()
     setRedirectLink(location?.origin + "/paid/" +  (+linkId + 1) )
-    // setRedirectLink(response.data.Hash)
+    setCid(response.data.Hash)
     setLoading(false)
 
 };
@@ -132,7 +133,7 @@ const setViewCollection = async () => {
   
     const price_ = ethers.utils.parseEther(price);
 
-    const tx = await contract.setViewCollection(redirectLink, price_);
+    const tx = await contract.setViewCollection(cid, price_);
     await tx.wait();
     setLoading(false)
     console.log(tx);
