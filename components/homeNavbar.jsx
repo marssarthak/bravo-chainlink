@@ -6,8 +6,8 @@ import Logo from "../assets/image/logo.png";
 
 export function HomeNavbar() {
     return (
-        <nav className="fixed h-[65px] top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-            <div className="px-3 py-3 lg:px-5 lg:pl-3">
+        <nav className="fixed h-[65px] top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-[#202020] dark:border-gray-700">
+            <div className="px-3 py-3 lg:px-5 lg:pl-3 container mx-auto">
                 <div className="flex  items-center justify-between">
                     <div className="flex items-center justify-start">
                         <button
@@ -47,7 +47,7 @@ export function HomeNavbar() {
                             className="hover:opacity-75 lg:pl-5 lg:pr-5"
                             href="/app/create"
                         >
-                            <div className="flex items-center bg-[rgb(69,69,69)] hover:bg-[rgb(80,80,80)] text-white font-semibold py-2 px-4 rounded-lg">
+                            <div className="flex items-center bg-[#f5c2a5] text-black hover:bg-[rgb(80,80,80)] font-normal py-2 px-4 rounded-lg">
                                 Launch App
                             </div>
                         </Link>

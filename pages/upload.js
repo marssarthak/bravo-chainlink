@@ -18,7 +18,7 @@ const createTable = async () => {
   console.log(create.txn.name); // e.g., my_sdk_table_80001_311
 }
 
-// createTable()
+createTable()
 
 
 
