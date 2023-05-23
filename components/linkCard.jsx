@@ -31,6 +31,7 @@ export default function LinkCard({
   const [loading, setLoading] = useState(false)
   const [price, setPrice] = useState("")
 
+  console.log(redirectLink)
   const lighthouseKey = process.env.NEXT_PUBLIC_LIGHTHOUSE_KEY;
 
 
@@ -67,10 +68,28 @@ const uploadFileEncrypted = async (e) => {
     console.log(response);
 
     applyAccessConditions(response.data.Hash);
-    setRedirectLink(response.data.Hash)
+    const linkId = await getLinkoId()
+    setRedirectLink(location?.origin + "/paid/" +  (+linkId + 1) )
+    // setRedirectLink(response.data.Hash)
     setLoading(false)
 
 };
+
+const getLinkoId = async () => {
+  const modal = new web3modal();
+  const connection = await modal.connect();
+  const provider = new ethers.providers.Web3Provider(connection);
+  const signer = provider.getSigner();
+
+  const contract = new ethers.Contract(
+      nftContractAddress,
+      nftContractAbi,
+      provider
+  );
+
+  const data = await contract.linkoId();
+  return data
+}
 
 const applyAccessConditions = async (cid) => {
     const conditions = [
@@ -101,7 +120,6 @@ const applyAccessConditions = async (cid) => {
 
 const setViewCollection = async () => {
     const modal = new web3modal();
-    setLoading(true)
     const connection = await modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
@@ -112,8 +130,9 @@ const setViewCollection = async () => {
     );
 
   
+    const price_ = ethers.utils.parseEther(price);
 
-    const tx = await contract.setViewCollection(redirectLink, price);
+    const tx = await contract.setViewCollection(redirectLink, price_);
     await tx.wait();
     setLoading(false)
     console.log(tx);
@@ -129,29 +148,27 @@ const setViewCollection = async () => {
   });
 
   const handelSubmit = async () => {
+    setLoading(true);
     if (type==="paid"){
-      setViewCollection()
+      await setViewCollection()
+    } 
+    try {
+      const { meta: insert } = await db
+        .prepare(`UPDATE ${tableName} SET link=? WHERE id=?`)
+        .bind(redirectLink, id)
+        .run();
 
+      // Wait for transaction finality
+      await insert.txn.wait();
+      console.log("Done");
+      await getData();
+
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      console.log(e);
     }
-    else{
-      setLoading(true);
-      try {
-        const { meta: insert } = await db
-          .prepare(`UPDATE ${tableName} SET link=? WHERE id=?`)
-          .bind(redirectLink, id)
-          .run();
-  
-        // Wait for transaction finality
-        await insert.txn.wait();
-        console.log("Done");
-        await getData();
-  
-        setLoading(false);
-      } catch (e) {
-        setLoading(false);
-        console.log(e);
-      }
-    }
+    
   };
 
   const uploadWithSpheron = async (e) => {

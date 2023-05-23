@@ -21,24 +21,28 @@ const createTable = async () => {
 createTable()
 
 
+//linko_links_3141_191
 
-const setLink = async() =>{
-  // Insert a row into the table
-  const { meta: insert } = await db
-  .prepare(`INSERT INTO ${tableName} (id, link) VALUES (?, ?);`)
-  .bind("link2", "https://www.youtube.com/")
-  .run();
+//linko_links_80001_6226
 
-  // Wait for transaction finality  
-  await insert.txn.wait();
 
-  // Perform a read query, requesting all rows from the table
-  const { results } = await db.prepare(`SELECT * FROM ${tableName};`).all();
+// const setLink = async() =>{
+//   // Insert a row into the table
+//   const { meta: insert } = await db
+//   .prepare(`INSERT INTO ${tableName} (id, link) VALUES (?, ?);`)
+//   .bind("link2", "https://www.youtube.com/")
+//   .run();
 
-  console.log(results)
-}
+//   // Wait for transaction finality  
+//   await insert.txn.wait();
 
-setLink()
+//   // Perform a read query, requesting all rows from the table
+//   const { results } = await db.prepare(`SELECT * FROM ${tableName};`).all();
+
+//   console.log(results)
+// }
+
+// setLink()
 
 export default function upload() {
   return (
