@@ -28,12 +28,13 @@ export default function Decrypt() {
         const items = await Promise.all(
             data.map(async (i) => {
                 let price = ethers.utils.formatEther(i.price);
+                let usdPrice = ethers.utils.formatEther(i.usdPrice);
                 let item = {
                     cid: i.cid,
                     price,
-                    usdPrice: i.usdPrice.toNumber(),
+                    usdPrice,
                     host: i.host.toString(),
-                    linkoId: i.host,
+                    linkoId: i.linkoId,
                 };
                 return item;
             })
@@ -44,18 +45,6 @@ export default function Decrypt() {
 
     };
 
-    const usdPrice = async () => {
-        const modal = new web3modal();
-        const connection = await modal.connect();
-        const provider = new ethers.providers.Web3Provider(connection);
-        const contract = new ethers.Contract(
-            nftContractAddress,
-            nftContractAbi,
-            provider
-        );
-
-        const data = await contract.fetchLinko();
-    }
 
     const buyAccess = async (prop) => {
 

@@ -3,8 +3,8 @@ const hyperspaceAddress = `0xBa55f5cA3bdbd34e0996775Ac3CE1C1d6E7a08f7`
 
 export const contractAddress = hyperspaceAddress
 
-const nftMumbaiAddress = `0xB0c0Bb0aae74a8038bd731B3a4059A41D74107b8`
-const nftHyperspaceAddress = ``
+const nftMumbaiAddress = `0x31544EC35067c36F53ed3f5a9De1832E890Ad3c2`
+const nftHyperspaceAddress = `0x6DE3E2C4C564F3043387171965471520595255e8`
 
 export const nftContractAddress = nftMumbaiAddress
 

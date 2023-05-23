@@ -54,44 +54,26 @@ export function Sidebar() {
               <span className="flex-1 ml-3 whitespace-nowrap">Manage</span>
             </Link>
           </li>
+          <li>
+            <Link
+              href="/app/nfts"
+              className={"flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 " + (isActive("/app/nfts") ?"bg-gray-700" : "")}
+            >
+              <svg
+                aria-hidden="true"
+                className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
+                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
+              </svg>
+              <span className="flex-1 ml-3 whitespace-nowrap">Paid Files</span>
+            </Link>
+          </li>
         </ul>
       </div>
     </aside>
-    // <div className="w-[18%] h-screen ">
-    //     <ul className="flex flex-col h-screen p-4 bg-gray-400 text-white">
-    //         <li className={isActive("/app/dashboard") ? "text-blue-500" : ""}>
-    //         {/* <li> */}
-    //             <div className="relative inline-block w-full text-left">
-    //                 <Link
-    //                     className="hover:opacity-75 lg:pl-5 lg:pr-5"
-    //                     href="/app/create"
-    //                 >
-    //                     Create
-    //                 </Link>
-    //             </div>
-    //         </li>
-    //         <li className={isActive("/app/manage") ? "text-blue-500" : ""}>
-    //         <div className="relative inline-block w-full text-left">
-    //                 <Link
-    //                     className="hover:opacity-75 lg:pl-5 lg:pr-5"
-    //                     href="/app/manage"
-    //                 >
-    //                     Manage
-    //                 </Link>
-    //             </div>
-    //         </li>
-    //         <li className={isActive("/app/nfts") ? "text-blue-500" : ""}>
-    //         <div className="relative inline-block w-full text-left">
-    //                 <Link
-    //                     className="hover:opacity-75 lg:pl-5 lg:pr-5"
-    //                     href="/app/nfts"
-    //                 >
-    //                     Nfts
-    //                 </Link>
-    //             </div>
-    //         </li>
-    //     </ul>
-    // </div>
-    // <div>sidebar</div>
   );
 }

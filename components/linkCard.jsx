@@ -10,6 +10,10 @@ import TextField from "@mui/material/TextField";
 import { upload } from "@spheron/browser-upload";
 import { Database } from "@tableland/sdk";
 import Loader from "./Loader";
+import { ethers } from "ethers";
+import lighthouse from "@lighthouse-web3/sdk";
+import { nftContractAddress, nftContractAbi } from "../config.js";
+import web3modal from "web3modal";
 
 export default function LinkCard({
   link,
@@ -25,6 +29,95 @@ export default function LinkCard({
   const [type, setType] = useState("file");
   const [redirectLink, setRedirectLink] = useState("");
   const [loading, setLoading] = useState(false)
+  const [price, setPrice] = useState("")
+
+  const lighthouseKey = process.env.NEXT_PUBLIC_LIGHTHOUSE_KEY;
+
+
+  const encryptionSignature = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const address = await signer.getAddress();
+    const messageRequested = (await lighthouse.getAuthMessage(address)).data
+        .message;
+    const signedMessage = await signer.signMessage(messageRequested);
+    return {
+        signedMessage: signedMessage,
+        publicKey: address,
+    };
+};
+
+const progressCallback = (progressData) => {
+    let percentageDone =
+        100 - (progressData?.total / progressData?.uploaded)?.toFixed(2);
+    console.log(percentageDone);
+};
+
+// main function
+const uploadFileEncrypted = async (e) => {
+    setLoading(true)
+    const sig = await encryptionSignature();
+    const response = await lighthouse.uploadEncrypted(
+        e,
+        lighthouseKey,
+        sig.publicKey,
+        sig.signedMessage,
+        progressCallback
+    );
+    console.log(response);
+
+    applyAccessConditions(response.data.Hash);
+    setRedirectLink(response.data.Hash)
+    setLoading(false)
+
+};
+
+const applyAccessConditions = async (cid) => {
+    const conditions = [
+        {
+            id: 1,
+            chain: "mumbai",
+            method: "balanceOf",
+            standardContractType: "ERC721",
+            contractAddress: nftContractAddress,
+            returnValueTest: { comparator: ">=", value: "1" },
+            parameters: [":userAddress"],
+        },
+    ];
+
+    const aggregator = "([1])";
+    const { publicKey, signedMessage } = await encryptionSignature();
+
+    const response = await lighthouse.applyAccessCondition(
+        publicKey,
+        cid,
+        signedMessage,
+        conditions,
+        aggregator
+    );
+
+    console.log(response);
+};
+
+const setViewCollection = async () => {
+    const modal = new web3modal();
+    setLoading(true)
+    const connection = await modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(
+        nftContractAddress,
+        nftContractAbi,
+        signer
+    );
+
+  
+
+    const tx = await contract.setViewCollection(redirectLink, price);
+    await tx.wait();
+    setLoading(false)
+    console.log(tx);
+};
 
   const handleChange = (event) => {
     setType(event.target.value);
@@ -36,23 +129,28 @@ export default function LinkCard({
   });
 
   const handelSubmit = async () => {
-    console.log(id, redirectLink);
-    setLoading(true);
-    try {
-      const { meta: insert } = await db
-        .prepare(`UPDATE ${tableName} SET link=? WHERE id=?`)
-        .bind(redirectLink, id)
-        .run();
+    if (type==="paid"){
+      setViewCollection()
 
-      // Wait for transaction finality
-      await insert.txn.wait();
-      console.log("Done");
-      await getData();
-
-      setLoading(false);
-    } catch (e) {
-      setLoading(false);
-      console.log(e);
+    }
+    else{
+      setLoading(true);
+      try {
+        const { meta: insert } = await db
+          .prepare(`UPDATE ${tableName} SET link=? WHERE id=?`)
+          .bind(redirectLink, id)
+          .run();
+  
+        // Wait for transaction finality
+        await insert.txn.wait();
+        console.log("Done");
+        await getData();
+  
+        setLoading(false);
+      } catch (e) {
+        setLoading(false);
+        console.log(e);
+      }
     }
   };
 
@@ -174,6 +272,7 @@ export default function LinkCard({
                     sx={{ color: "white", borderColor: "gray" }}
                   >
                     <MenuItem value={"file"}>File</MenuItem>
+                    <MenuItem value={"paid"}>File (paid)</MenuItem>
                     <MenuItem value={"link"}>Link</MenuItem>
                   </Select>
                 </FormControl>
@@ -189,7 +288,9 @@ export default function LinkCard({
                     variant="outlined"
                   />
                 </div>
-              ) : (
+              ) : 
+               type === "file" ? 
+              (
                 <div>
                   <input
                     onChange={uploadWithSpheron}
@@ -198,7 +299,20 @@ export default function LinkCard({
                     type="file"
                   />
                 </div>
-              )}
+              ): 
+              
+              (
+                <div className="flex justify-between items-center gap-5">
+                  <TextField value={price} onChange={e => setPrice(e.target.value)} id="outlined-basic" label="Price" variant="outlined" />
+                  <input
+                    onChange={uploadFileEncrypted}
+                    className="block w-full text-lg py-2.5 my-1 text-gray-900 border border-gray-300 rounded-sm  cursor-pointer  dark:text-gray-400 focus:outline-none dark:border-gray-600 dark:placeholder-gray-400"
+                    id="large_size"
+                    type="file"
+                  />
+                </div>
+              )
+              }
             </div>
           ) : null}
           {
