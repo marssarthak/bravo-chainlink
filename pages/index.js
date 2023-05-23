@@ -19,7 +19,7 @@ export default function Home() {
     return (
         <>
             <HomeNavbar />
-            <div className="min-h-screen mt-28 mb-8 mx-20 ">
+            <div className="min-h-screen mt-28 mb-14 mx-20 ">
                 <div className="hero-wrapper !h-auto pb-0 relative">
                     <div className="relative mt-8 flex flex-1 flex-col justify-end overflow-hidden rounded-[36px] p-8 px-12">
                         <div className="hero-bg absolute inset-0 -z-10 rounded-[36px] bg-gel-black md:block [&>div]:absolute [&>div]:inset-0 [&>div]:rounded-[36px]"></div>
