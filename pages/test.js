@@ -1,8 +1,15 @@
-import React from "react";
+import { useState } from "react";
 import { ethers } from "ethers";
 import lighthouse from "@lighthouse-web3/sdk";
+import { nftContractAddress, nftContractAbi } from "../config.js";
+import web3modal from "web3modal";
 
-export default function VerifiedViewUpload() {
+export default function Encrypt() {
+    const [formInput, setFormInput] = useState({
+        file: null,
+        price: "",
+    });
+
     const lighthouseKey = process.env.NEXT_PUBLIC_LIGHTHOUSE_KEY;
 
     const encryptionSignature = async () => {
@@ -24,16 +31,8 @@ export default function VerifiedViewUpload() {
         console.log(percentageDone);
     };
 
-    /* Deploy file along with encryption */
+    // main function
     const uploadFileEncrypted = async (e) => {
-        /*
-       uploadEncrypted(e, accessToken, publicKey, signedMessage, uploadProgressCallback)
-       - e: js event
-       - accessToken: your API key
-       - publicKey: wallets public key
-       - signedMessage: message signed by the owner of publicKey
-       - uploadProgressCallback: function to get progress (optional)
-    */
         const sig = await encryptionSignature();
         const response = await lighthouse.uploadEncrypted(
             e,
@@ -43,20 +42,73 @@ export default function VerifiedViewUpload() {
             progressCallback
         );
         console.log(response);
-        /*
-      output:
-        data: {
-          Name: "c04b017b6b9d1c189e15e6559aeb3ca8.png",
-          Size: "318557",
-          Hash: "QmcuuAtmYqbPYmPx3vhJvPDi61zMxYvJbfENMjBQjq7aM3"
-        }
-      Note: Hash in response is CID.
-    */
+
+        applyAccessConditions(response.data.Hash);
+        setFormInput({...formInput, file: response.data.Hash});
+    };
+
+    const applyAccessConditions = async (cid) => {
+        const conditions = [
+            {
+                id: 1,
+                chain: "mumbai",
+                method: "balanceOf",
+                standardContractType: "ERC721",
+                contractAddress: "0xC5e8493f291A510fa9181C01F172A711cfEf2b38",
+                returnValueTest: { comparator: ">=", value: "1" },
+                parameters: [":userAddress"],
+            },
+        ];
+
+        const aggregator = "([1])";
+        const { publicKey, signedMessage } = await encryptionSignature();
+
+        const response = await lighthouse.applyAccessCondition(
+            publicKey,
+            cid,
+            signedMessage,
+            conditions,
+            aggregator
+        );
+
+        console.log(response);
+    };
+
+    const setViewCollection = async () => {
+        const modal = new web3modal();
+        const connection = await modal.connect();
+        const provider = new ethers.providers.Web3Provider(connection);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(
+            nftContractAddress,
+            nftContractAbi,
+            signer
+        );
+
+        const price = ethers.utils.parseEther(formInput.price);
+
+        const tx = await contract.setViewCollection(formInput.file, price);
+        await tx.wait();
+
+        console.log(tx);
     };
 
     return (
         <div className="App">
             <input onChange={(e) => uploadFileEncrypted(e)} type="file" />
+            <input
+                name="price"
+                placeholder="Fil"
+                required
+                onChange={(e) =>
+                    setFormInput({
+                        ...formInput,
+                        price: e.target.value,
+                    })
+                }
+            />
+
+            <button onClick={setViewCollection}>Publish</button>
         </div>
     );
 }
