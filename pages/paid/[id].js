@@ -108,7 +108,7 @@ export default function Files() {
 
         const url = URL.createObjectURL(decrypted);
         console.log(url);
-        setFileURL(url);
+        // setFileURL(url);
         Download(cid, url);
     };
 

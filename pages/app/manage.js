@@ -82,7 +82,7 @@ export default function Dashboard() {
                         type="name"
                         onChange={(e) => setInputLink(e.target.value)}
                     /> */}
-                    <h2 className='text-center text-4xl font-bold mt-4'>Your Linko's</h2>
+                    <h2 className='text-center text-4xl font-bold mt-4'>Your Linkos</h2>
 
                     {linkData.map((item, index) => {
                         return <LinkCard getData={getData} onClick={() => setOpen(index)} open={index===open} redirectTo={item.link} key={item.id} id={item.id} link={location?.origin + "/" + item.id}/>
