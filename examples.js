@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv'
 dotenv.config();
 
 import fs, { access, write } from 'fs';
-
+import dynamic from 'next/dynamic.js';
 import SpaceAndTimeSDK from "./SpaceAndTimeSDK.js";
 import Utils from './utils/utils-functions.js';		
 import SQLOperation from './BiscuitConstants.js';		

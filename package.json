@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@biscuit-auth/biscuit-wasm": "^0.4.0-alpha3",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@lighthouse-web3/sdk": "^0.2.3",
@@ -17,7 +18,12 @@
     "@spheron/storage": "^1.0.15",
     "@tableland/sdk": "^4.2.2",
     "autoprefixer": "10.4.14",
+    "axios": "^1.3.4",
+    "base64-js": "^1.5.1",
+    "base64url": "^3.0.1",
     "connectkit": "1.1.1",
+    "crypto-js": "^4.1.1",
+    "dotenv": "^16.0.3",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.3",
     "ethers": "^5.7.2",
@@ -28,15 +34,10 @@
     "react-dom": "18.2.0",
     "react-lottie": "^1.2.3",
     "tailwindcss": "3.3.2",
+    "tweetnacl": "^1.0.3",
     "wagmi": "^0.9.6",
+    "wasm-loader": "^1.3.0",
     "web3.storage": "^4.5.4",
-    "web3modal": "^1.9.12",
-    "@biscuit-auth/biscuit-wasm": "^0.4.0-alpha3",
-    "axios": "^1.3.4",
-    "base64-js": "^1.5.1",
-    "base64url": "^3.0.1",
-    "crypto-js": "^4.1.1",
-    "dotenv": "^16.0.3",
-    "tweetnacl": "^1.0.3"
+    "web3modal": "^1.9.12"
   }
 }
