@@ -10,7 +10,7 @@ import Utils from './utils/utils-functions.js';
 
 export default class SpaceAndTimeSDK {
     constructor() {
-        this.baseUrl = process.env.BASEURL;
+        this.baseUrl = process.env.NEXT_PUBLIC_BASEURL;
     } 
 
     static init() {
@@ -98,7 +98,7 @@ export default class SpaceAndTimeSDK {
 
     async AuthenticateUser(privateKeyArg = "", publicKeyArg = "") {
 
-        let userId = process.env.USERID;
+        let userId = process.env.NEXT_PUBLIC_USERID;
 
         let mainPublicKey = (publicKeyArg === "") ? b64PublicKey : publicKeyArg;
         let mainPrivateKey = (privateKeyArg === "") ? b64PrivateKey : privateKeyArg;
@@ -121,7 +121,7 @@ export default class SpaceAndTimeSDK {
     // Generates out Access and Refresh Tokens 
     async Authenticate(privateKey, publicKey, prefix = "") {
 
-        let userId = process.env.USERID, joinCode = process.env.JOINCODE, scheme = process.env.SCHEME;
+        let userId = process.env.NEXT_PUBLIC_USERID, joinCode = process.env.NEXT_PUBLIC_JOINCODE, scheme = process.env.NEXT_PUBLIC_SCHEME;
 
         let [ authCodeResponse, authCodeError ] = await this.#generateAuthCode(userId, prefix, joinCode);
         if(authCodeError) throw new Error(authCodeError);

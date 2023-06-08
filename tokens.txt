@@ -1,0 +1,122 @@
+https://hackathon.spaceandtime.dev
+
+Private key: qXkmblMY8966X9tEyx1b9RP25kDLOgEdonl8sSynHxo=
+Public key:  Qc6oYoF5BCd35ugXVryebiMn4OtziXm38xUuJgA5S94=
+
+
+
+{
+    "subscriptionId": "9bb26d78-6fe3-4fb3-8734-e1123c6de907",
+    "joinCode": "79aead1318337c70154afb3d"
+}
+
+sxtcli authenticate login --privateKey="qXkmblMY8966X9tEyx1b9RP25kDLOgEdonl8sSynHxo=" --publicKey="Qc6oYoF5BCd35ugXVryebiMn4OtziXm38xUuJgA5S94=" --url="https://hackathon.spaceandtime.dev" --userId="sarthak"
+
+accessToken:  eyJ0eXBlIjoiYWNjZXNzIiwia2lkIjoiNGE2NTUwNjYtZTMyMS00NWFjLThiZWMtZDViYzg4ZWUzYTIzIiwiYWxnIjoiRVMyNTYifQ.eyJpYXQiOjE2ODYwNTQyMzUsIm5iZiI6MTY4NjA1NDIzNSwiZXhwIjoxNjg2MDU1NzM1LCJ0eXBlIjoiYWNjZXNzIiwidXNlciI6InNhcnRoYWsiLCJzdWJzY3JpcHRpb24iOiI5YmIyNmQ3OC02ZmUzLTRmYjMtODczNC1lMTEyM2M2ZGU5MDciLCJzZXNzaW9uIjoiYzE0NzNhM2QwMWQwMzk4OTFhYzYzZWM3Iiwic3NuX2V4cCI6MTY4NjE0MDYzNTg2MiwiaXRlcmF0aW9uIjoiMjgxNjFkMDVkYzU4MDY5YTUxMmM4YzIzIn0.bDJwjlSH5_7reP6u1J7XEb_p2Oy0s2_DvWLb198Zk7ICThO2gwp1CH1imx_EFBpwW4kVLYFXoNkZZMglEjlqKw
+refreshToken: eyJ0eXBlIjoicmVmcmVzaCIsImtpZCI6IjRhNjU1MDY2LWUzMjEtNDVhYy04YmVjLWQ1YmM4OGVlM2EyMyIsImFsZyI6IkVTMjU2In0.eyJpYXQiOjE2ODYwNTQyMzUsIm5iZiI6MTY4NjA1NDIzNSwiZXhwIjoxNjg2MDU2MDM1LCJ0eXBlIjoicmVmcmVzaCIsInVzZXIiOiJzYXJ0aGFrIiwic3Vic2NyaXB0aW9uIjoiOWJiMjZkNzgtNmZlMy00ZmIzLTg3MzQtZTExMjNjNmRlOTA3Iiwic2Vzc2lvbiI6ImMxNDczYTNkMDFkMDM5ODkxYWM2M2VjNyIsInNzbl9leHAiOjE2ODYxNDA2MzU4NjIsIml0ZXJhdGlvbiI6IjI4MTYxZDA1ZGM1ODA2OWE1MTJjOGMyMyJ9.B85n1un5kiAFTtLE0YvXQWmE_P5UlKg3pBCliva9VkTUs5VapK9iedoklEXbKJpsYQSqySJrUnF96SYko31u8Q
+curl -i --request POST \
+     --url "$SxT_DQL_API" \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer '"$AT"'' \
+     --header 'content-type: application/json' \
+     --data @- <<EOF
+{
+  "resourceId": "ETHEREUM.ERC721_TRANSFER",
+  "sqlText": "SELECT COUNT(*) FROM ETHEREUM.ERC721_TRANSFER WHERE CONTRACT_ADDRESS =
+'0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D' AND CAST(TIME_STAMP AS DATE) = '2023-03-19'"
+}
+EOF
+
+
+curl -i --request POST \                                                                   
+--url 'https://hackathon.spaceandtime.dev/v1/sql/ddl' \
+--header 'accept: application/json' \
+--header 'authorization: Bearer "$AT' \
+--header 'content-type: application/json' \
+--data '
+{
+"sqlText": "CREATE SCHEMA LINKO"
+}
+'
+
+TESTSS
+
+curl -i --request POST --url 'https://hackathon.spaceandtime.dev/v1/sql/ddl' --header 'accept: application/json' --header 'authorization: Bearer $AT' --header 'content-type: application/json' --data '
+{
+"sqlText": "CREATE SCHEMA LINKO"
+}
+'
+
+
+sxtcli biscuit generate table --privateKey="<BISCUIT_PRIVATE_KEY>" --resources="<SCHEMA>.<TABLE>" --operations="CREATE,ALTER,DROP,INSERT,UPDATE,MERGE,DELETE,SELECT"
+
+// BISCUIT PART
+Scheama Name: LINKO
+
+Biscuit Key pair  
+private key: 4FF76AD1EF65A250BD04C634822E4F74BA48644E9903BEE587571D0394D2DFEF
+public key: 017A196A789BEF8FAE40B55C123E095CE2FECC13887F6D8002D63C6BDC31B008
+
+
+
+sxtcli biscuit generate table --privateKey=4FF76AD1EF65A250BD04C634822E4F74BA48644E9903BEE587571D0394D2DFEF --resources="LINKO.USERS" --operations="CREATE,ALTER,DROP,INSERT,UPDATE,MERGE,DELETE,SELECT"
+ZGRsX2Ryb3AKCmRtbF9pbnNlcnQKCmRtbF91cGRhdGUKCWRtbF9tZXJnZQoKZG1sX2RlbGV0ZQoKZHFsX3NlbGVjdBgDIg8KDQiACBIDGIEIEgMYgggiDwoNCIAIEgMYgwgSAxiCCCIPCg0IgAgSAxiECBIDGIIIIg8KDQiACBIDGIUIEgMYgggiDwoNCIAIEgMYhggSAxiCCCIPCg0IgAgSAxiHCBIDGIIIIg8KDQiACBIDGIgIEgMYgggiDwoNCIAIEgMYiQgSAxiCCBIkCAASIHCkLYQicHghz5cYeyV8_q6ckshA3jtbcX3TnyXeB1B8GkCpTeQJw3p2ybXb8FcNH_bq8PJh64IJfiVrd5liKKVjE812IHcz2PsYEtOrd7ScJ4fjjY7w-ffu9UqS2VfQ-8YGIiIKIGf39B06G6gkxlZZudw0Qb0G6_QLXjHwkcbdHDAT0OoR
+
+
+//CREATE TABLE CODE. 
+curl --request POST \
+     --url "https://hackathon.spaceandtime.dev/v1/sql/ddl" \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer eyJ0eXBlIjoiYWNjZXNzIiwia2lkIjoiNGE2NTUwNjYtZTMyMS00NWFjLThiZWMtZDViYzg4ZWUzYTIzIiwiYWxnIjoiRVMyNTYifQ.eyJpYXQiOjE2ODYwNTI2MTEsIm5iZiI6MTY4NjA1MjYxMSwiZXhwIjoxNjg2MDU0MTExLCJ0eXBlIjoiYWNjZXNzIiwidXNlciI6InNhcnRoYWsiLCJzdWJzY3JpcHRpb24iOiI5YmIyNmQ3OC02ZmUzLTRmYjMtODczNC1lMTEyM2M2ZGU5MDciLCJzZXNzaW9uIjoiZjE2NDM0NTg2YWE1NDczNzM5YjNjMGI0Iiwic3NuX2V4cCI6MTY4NjEzOTAxMTE3OSwiaXRlcmF0aW9uIjoiNTk5M2Q1NmM0NzAwYTdlNzBiYWQ1NjM3In0.V5QiFZDf1S97gDsYfRtz7BYwmeePNkHxUG1MrMm9QEEByQkP_n_f47JGo3U_0JxchXpBLGW49lJZ6aNYSvxNgg' \
+     --header 'biscuit: ZGRsX2Ryb3AKCmRtbF9pbnNlcnQKCmRtbF91cGRhdGUKCWRtbF9tZXJnZQoKZG1sX2RlbGV0ZQoKZHFsX3NlbGVjdBgDIg8KDQiACBIDGIEIEgMYgggiDwoNCIAIEgMYgwgSAxiCCCIPCg0IgAgSAxiECBIDGIIIIg8KDQiACBIDGIUIEgMYgggiDwoNCIAIEgMYhggSAxiCCCIPCg0IgAgSAxiHCBIDGIIIIg8KDQiACBIDGIgIEgMYgggiDwoNCIAIEgMYiQgSAxiCCBIkCAASIHCkLYQicHghz5cYeyV8_q6ckshA3jtbcX3TnyXeB1B8GkCpTeQJw3p2ybXb8FcNH_bq8PJh64IJfiVrd5liKKVjE812IHcz2PsYEtOrd7ScJ4fjjY7w-ffu9UqS2VfQ-8YGIiIKIGf39B06G6gkxlZZudw0Qb0G6_QLXjHwkcbdHDAT0OoR' \
+     --header 'content-type: application/json' \
+     --data '
+{
+  "sqlText": "CREATE TABLE LINKO.USERS (
+  User_Wallet_Address  VARCHAR  PRIMARY KEY,
+  User_Subscription    VARCHAR
+) WITH "public_key=017A196A789BEF8FAE40B55C123E095CE2FECC13887F6D8002D63C6BDC31B008,access_type=public_write\"" 
+}'
+
+
+//insert into table
+
+curl -i --request POST \
+     --url "https://hackathon.spaceandtime.dev/v1/sql/dml" \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer '"$AT"'' \
+     --header 'biscuit: ZGRsX2Ryb3AKCmRtbF9pbnNlcnQKCmRtbF91cGRhdGUKCWRtbF9tZXJnZQoKZG1sX2RlbGV0ZQoKZHFsX3NlbGVjdBgDIg8KDQiACBIDGIEIEgMYgggiDwoNCIAIEgMYgwgSAxiCCCIPCg0IgAgSAxiECBIDGIIIIg8KDQiACBIDGIUIEgMYgggiDwoNCIAIEgMYhggSAxiCCCIPCg0IgAgSAxiHCBIDGIIIIg8KDQiACBIDGIgIEgMYgggiDwoNCIAIEgMYiQgSAxiCCBIkCAASIHCkLYQicHghz5cYeyV8_q6ckshA3jtbcX3TnyXeB1B8GkCpTeQJw3p2ybXb8FcNH_bq8PJh64IJfiVrd5liKKVjE812IHcz2PsYEtOrd7ScJ4fjjY7w-ffu9UqS2VfQ-8YGIiIKIGf39B06G6gkxlZZudw0Qb0G6_QLXjHwkcbdHDAT0OoR' \
+     --header 'content-type: application/json' \
+     --data @- <<EOF
+{
+  "resourceId": "LINKO.USERS",
+  "sqlText": "INSERT INTO LINKO.USERS (User_Wallet_Address, User_Subscription) VALUES ('0x2B6eD29A95753C3Ad948348e3e7b1A251080Ffb9', 'prime')"
+}
+EOF
+
+
+sxtcli sql --accessToken=$AT --url=$SxT_API_URL ddl --resourceId="LINKO.USERS" --biscuits=$BISCUIT --sqlText="CREATE TABLE LINKO.USERS (ID INT, NAME VARCHAR, PRIMARY KEY (ID)) WITH \"public_key='"017A196A789BEF8FAE40B55C123E095CE2FECC13887F6D8002D63C6BDC31B008"',access_type=public_read\""
+
+
+
+schema name- TESTSS
+table name: TAB
+
+private key: 9F9EA5D5DD588D2844661458CD46C907A8ECC29E0227B5C0805ECCD884C1A58E
+public key: D9884F2BB36B295B44B8AB8C02FF216CB3EACA3E7614EA877D9EA65842952D51
+EtECCuYBCg5zeHQ6Y2FwYWJpbGl0eQoKZGRsX2NyZWF0ZQoKdGVzdHNzLnRhYgoIZGRsX2Ryb3AKCmRtbF9pbnNlcnQKCmRtbF91cGRhdGUKCWRtbF9tZXJnZQoKZG1sX2RlbGV0ZQoKZHFsX3NlbGVjdBgDIg8KDQiACBIDGIEIEgMYgggiDwoNCIAIEgMYgwgSAxiCCCIPCg0IgAgSAxiECBIDGIIIIg8KDQiACBIDGIUIEgMYgggiDwoNCIAIEgMYhggSAxiCCCIPCg0IgAgSAxiHCBIDGIIIIg8KDQiACBIDGIgIEgMYgggSJAgAEiAOHVDRmDUFswGhvDL9bymF2wlcPgCMaWuChHkLdv5qoRpAN7rw-u-p-b7sLmPc7tiy4ASosvo0Jbn4eMLFZgzhtzocvj6xSVR0RGSQ9KKWHB9Byj8qe_Q8xJJcSmBhJ6aJCyIiCiA3ZH2bDrd-xkCSQQVTucdM3ORpp8lfrtxvPtplcBgH_Q==
+
+
+sxtcli sql --accessToken=$AT --url=$SxT_API_URL dql \                                                                                                          [8:53:52]
+--resourceId="TESTSS.TAB" --sqlText="SELECT * FROM TESTSS.TAB" 
+
+
+env
+
+NEXT_PUBLIC_SPHERON_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlLZXkiOiIwOGQzNzEyNmVlNjIwNzk3NzlhYjAzZGY1YjU4MTg2YmFmOTg4MTQ0MGYxYjkyYjk1OTc4NzUxMDUxYTQzYzJjY2EyY2RlZTUxZDkyMzkyZGQ4ZDhhZjFkMDg0YmI4ZDljOTcwY2NmY2Q1NTYzYmExZWUxZjNlZTFlYjc5YzcxMSIsImlhdCI6MTY4NDc4NTI4NCwiaXNzIjoid3d3LnNwaGVyb24ubmV0d29yayJ9.TndlKO7B7LAyP0Uk1hGToCuIyE-_mJJHws-Seehr-ss
+NEXT_PUBLIC_WEB3STORAGE=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDkyMjkyQjQ5YzFjN2ExMzhERWQxQzQ3NGNlNmEyNmM1NURFNWQ0REQiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NjUyMzg2MDc1NDEsIm5hbWUiOiJNZXRhRmkifQ.cwyjEIx8vXtTnn8Y3vctroo_rooHV4ww_2xKY-MT0rs
+NEXT_PUBLIC_LIGHTHOUSE_KEY=1c35405b.361f8f838bab46fc9cc4b0ce7f346749
+NEXT_PUBLIC_USERID=sarthak
+NEXT_PUBLIC_JOINCODE=79aead1318337c70154afb3d
+NEXT_PUBLIC_SCHEME=TESTSS
+NEXT_PUBLIC_BASEURL=https://hackathon.spaceandtime.dev

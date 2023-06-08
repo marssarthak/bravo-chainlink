@@ -13,9 +13,9 @@ import  {biscuit, block, authorizer, Biscuit, KeyPair, Fact, PrivateKey} from '@
 
 const initSDK = SpaceAndTimeSDK.init();
 
-let userId = process.env.USERID;
-let joinCode = process.env.JOINCODE;
-let scheme = process.env.SCHEME;
+let userId = process.env.NEXT_PUBLIC_USERID;
+let joinCode = process.env.NEXT_PUBLIC_JOINCODE;
+let scheme = process.env.NEXT_PUBLIC_SCHEME;
 
 /** AUTHENTICATION BLOCK STARTS **/
 
