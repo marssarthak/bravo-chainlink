@@ -3,8 +3,6 @@ dotenv.config();
 
 import axios from 'axios';
 import nacl from "tweetnacl";
-import fs, { access, write } from 'fs';
-import os from 'os';
 import { ED25519PublicKeyUint, ED25519PrivateKeyUint, b64PrivateKey, b64PublicKey, hexEncodedPrivateKey, hexEncodedPublicKey, biscuitPrivateKey } from "./utils/keygen.js";
 import Utils from './utils/utils-functions.js';
 
@@ -135,15 +133,31 @@ export default class SpaceAndTimeSDK {
         let accessToken = tokenResponse.accessToken, refreshToken = tokenResponse.refreshToken;
         let accessTokenExpires = tokenResponse.accessTokenExpires, refreshTokenExpires = tokenResponse.refreshTokenExpires
 
-        this.writeToFile(accessToken, refreshToken, accessTokenExpires, refreshTokenExpires)
+        this.addToStorage(accessToken, refreshToken, accessTokenExpires, refreshTokenExpires)
 
         // Writing values of Public and Private key to ENV.
-        this.setEnvValue("NEXT_PUBLIC_PUBLICKEY", publicKey);
-        this.setEnvValue("NEXT_PUBLIC_PRIVATEKEY", privateKey);
+        // this.setEnvValue("NEXT_PUBLIC_PUBLICKEY", publicKey);
+        // this.setEnvValue("NEXT_PUBLIC_PRIVATEKEY", privateKey);
 
         return [ tokenResponse, tokenError ];   
     }
 
+    addToStorage(accessToken, refreshToken, accessTokenExpires, refreshTokenExpires)
+    {
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        localStorage.setItem("accessTokenExpires", accessTokenExpires);
+        localStorage.setItem("refreshTokenExpires", refreshTokenExpires);
+    }
+
+    removeFromStorage()
+    {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("accessTokenExpires");
+        localStorage.removeItem("refreshTokenExpires");
+    }
+    
     // Allows the user to generate new tokens if time left is less than or equal to 2 minutes OR gives them back their unexpired tokens.
     async rotateTokens() {
         
@@ -212,53 +226,43 @@ export default class SpaceAndTimeSDK {
         return PrivateKeyUint8Array;
       }
 
-     setEnvValue = (key, value) => {
-        const ENV_VARS = fs.readFileSync(".env", "utf8").split(os.EOL);
-        let found = false;
+    //  setEnvValue = (key, value) => {
+    //     const ENV_VARS = fs.readFileSync(".env", "utf8").split(os.EOL);
+    //     let found = false;
       
-        for (let i = 0; i < ENV_VARS.length; i++) {
-          const line = ENV_VARS[i].trim();
-          if (line.startsWith("#")) {
-            // Skip commented lines
-            continue;
-          }
+    //     for (let i = 0; i < ENV_VARS.length; i++) {
+    //       const line = ENV_VARS[i].trim();
+    //       if (line.startsWith("#")) {
+    //         // Skip commented lines
+    //         continue;
+    //       }
       
-          const [lineKey, lineValue] = line.split("=");
-          if (lineKey === key) {
-            // Key found, update its value
-            ENV_VARS[i] = `${key}=${JSON.stringify(value)}`;
-            found = true;
-            break;
-          }
-        }
+    //       const [lineKey, lineValue] = line.split("=");
+    //       if (lineKey === key) {
+    //         // Key found, update its value
+    //         ENV_VARS[i] = `${key}=${JSON.stringify(value)}`;
+    //         found = true;
+    //         break;
+    //       }
+    //     }
       
-        if (!found) {
-          // Key not found, add it
-          ENV_VARS.push(`${key}=${JSON.stringify(value)}`);
-        }
+    //     if (!found) {
+    //       // Key not found, add it
+    //       ENV_VARS.push(`${key}=${JSON.stringify(value)}`);
+    //     }
       
-        fs.writeFileSync(".env", ENV_VARS.join(os.EOL));
-      }
+    //     fs.writeFileSync(".env", ENV_VARS.join(os.EOL));
+    //   }
 
     retrieveFileContents = () => {
-
-        const fileContents = fs.readFileSync('session.txt','utf8');
-        const fileLines = fileContents.split(/\r?\n/);
-    
-        let accessToken = fileLines[0];
-        let refreshToken = fileLines[1];
-        let accessTokenExpires = fileLines[2];
-        let refreshTokenExpires = fileLines[3];
-
-        return { accessToken: accessToken, refreshToken: refreshToken, accessTokenExpires: accessTokenExpires, refreshTokenExpires: refreshTokenExpires };
-
-    }
-
-    writeToFile = (accessToken, refreshToken, accessTokenExpires, refreshTokenExpires) => {
-        const fileData = `${accessToken}\n${refreshToken}\n${accessTokenExpires}\n${refreshTokenExpires}\n`;
-        fs.writeFile('session.txt', fileData, (err) => {
-            if(err) throw new Error(err);
-        })
+        if (typeof window !== 'undefined') {
+            let accessToken = localStorage.getItem("accessToken");
+            let refreshToken = localStorage.getItem("refreshToken");
+            let accessTokenExpires = localStorage.getItem("accessTokenExpires");
+            let refreshTokenExpires =  localStorage.getItem("refreshTokenExpires");
+            return { accessToken: accessToken, refreshToken: refreshToken, accessTokenExpires: accessTokenExpires, refreshTokenExpires: refreshTokenExpires };
+        }
+       return { accessToken: "", refreshToken: "", accessTokenExpires: "", refreshTokenExpires: "" };
     }
 
     // Validates if the given access token is valid and returns userId on success.
@@ -307,7 +311,7 @@ export default class SpaceAndTimeSDK {
             refreshToken = response.data.refreshToken;
             let accessTokenExpires = response.data.accessTokenExpires, refreshTokenExpires = response.data.refreshTokenExpires;
 
-            this.writeToFile(accessToken, refreshToken, accessTokenExpires, refreshTokenExpires)
+            this.addToStorage(accessToken, refreshToken, accessTokenExpires, refreshTokenExpires)
             
             return [ response.data, null ];
         }
