@@ -12,36 +12,42 @@ import {
 import Utils from "../utils/utils-functions.js";
 // import  {biscuit, block, authorizer, Biscuit, KeyPair, Fact, PrivateKey} from '@biscuit-auth/biscuit-wasm';
 import SQLOperation from "../BiscuitConstants.js";
+import fs, { access, write } from 'fs';
+import * as dotenv from 'dotenv' 
+dotenv.config();
 export default function sxt() {
   const initSDK = SpaceAndTimeSDK.init();
-  async function abcd() {
+  let userId = process.env.NEXT_PUBLIC_USERID;
+  let joinCode = process.env.NEXT_PUBLIC_JOINCODE;
+  let scheme = process.env.NEXT_PUBLIC_SCHEME;
+  async function checkUserExist(id) {
     try{
-      const respo = await initSDK.checkUserIdExistance("kromeas");
-      console.log(respo);
+      let [ checkUserIDResponse, checkUserIDError ] = await initSDK.checkUserId(id);
+      if (checkUserIDResponse === true){
+        console.log("User already exists");
+      }
+      else{
+        console.log("User don't exists")
+      }
     }
     catch(e){
       console.log(e)
     }
   }
-  abcd();
 
-  console.log("I am sarthak vaish", )
 
-  let userId = process.env.NEXT_PUBLIC_USERID;
-  let joinCode = process.env.NEXT_PUBLIC_JOINCODE;
-  let scheme = process.env.NEXT_PUBLIC_SCHEME;
+  async function authenticateUser(){
+    let [ tokenResponse, tokenError ] = await initSDK.AuthenticateUser();
+    console.log(tokenResponse, tokenError);
 
-  console.log(userId, joinCode, scheme);
+    // // Reading access and refresh tokens from the file
+    // const fileContents = fs.readFileSync('session.txt','utf8');
+    // const fileLines = fileContents.split(/\r?\n/);
+  }
 
-  console.log({
-    ED25519PublicKeyUint,
-    ED25519PrivateKeyUint,
-    b64PrivateKey,
-    b64PublicKey,
-    hexEncodedPrivateKey,
-    hexEncodedPublicKey,
-    biscuitPrivateKey,
-  });
+
+  authenticateUser()
+
 
   return <div>sxt</div>;
 }

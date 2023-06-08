@@ -103,8 +103,8 @@ export default class SpaceAndTimeSDK {
         let mainPublicKey = (publicKeyArg === "") ? b64PublicKey : publicKeyArg;
         let mainPrivateKey = (privateKeyArg === "") ? b64PrivateKey : privateKeyArg;
         
-        let publicKey = (process.env.PUBLICKEY === undefined) ? mainPublicKey : process.env.PUBLICKEY;
-        let privateKey = (process.env.PRIVATEKEY === undefined) ? mainPrivateKey : process.env.PRIVATEKEY;
+        let publicKey = (process.env.NEXT_PUBLIC_PUBLICKEY === undefined) ? mainPublicKey : process.env.NEXT_PUBLIC_PUBLICKEY;
+        let privateKey = (process.env.NEXT_PUBLIC_PRIVATEKEY === undefined) ? mainPrivateKey : process.env.NEXT_PUBLIC_PRIVATEKEY;
         
         let userIdStatus = await this.checkUserIdExistance(userId);
         if(userIdStatus === false)
@@ -138,8 +138,8 @@ export default class SpaceAndTimeSDK {
         this.writeToFile(accessToken, refreshToken, accessTokenExpires, refreshTokenExpires)
 
         // Writing values of Public and Private key to ENV.
-        this.setEnvValue("PUBLICKEY", publicKey);
-        this.setEnvValue("PRIVATEKEY", privateKey);
+        this.setEnvValue("NEXT_PUBLIC_PUBLICKEY", publicKey);
+        this.setEnvValue("NEXT_PUBLIC_PRIVATEKEY", privateKey);
 
         return [ tokenResponse, tokenError ];   
     }
