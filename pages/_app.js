@@ -9,8 +9,15 @@ import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 
 export default function App({ Component, pageProps }) {
+    const darkTheme = createTheme({
+        palette: {
+          mode: "dark",
+        },
+      });
     const hyperspace = {
         id: 3_141,
         name: "Hyperspace",
@@ -60,10 +67,13 @@ export default function App({ Component, pageProps }) {
         <div>
             <WagmiConfig client={client}>
                 <ConnectKitProvider debugMode>
+                <ThemeProvider theme={darkTheme}>
+                    <CssBaseline />
                     <div>
                         {/* <Navbar /> */}
                         <Component {...pageProps} />
                     </div>
+                </ThemeProvider>
                 </ConnectKitProvider>
             </WagmiConfig>
         </div>

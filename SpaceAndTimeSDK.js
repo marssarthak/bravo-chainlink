@@ -345,6 +345,38 @@ export default class SpaceAndTimeSDK {
         }
     }
 
+    async GetTokens() {
+        const tokens = this.retrieveFileContents();
+        const accessToken = tokens.accessToken;
+        if (accessToken !== "") {
+        let [validAccessTokenResponse, validAccessTokenError] =
+            await this.validateToken();
+        if (validAccessTokenResponse) {
+            console.log("Valid access token provided.");
+            console.log("Valid User ID: ", validAccessTokenResponse);
+        } else {
+            let [refreshTokenResponse, refreshTokenError] =
+            await this.refreshToken();
+            console.log("Refreshed Tokens: ", refreshTokenResponse);
+    
+            if (!refreshTokenResponse) {
+            let [tokenResponse, tokenError] = await this.AuthenticateUser();
+            if (!tokenError) console.log(tokenResponse);
+            else {
+                console.log("Invalid User Tokens Provided");
+                console.log(tokenError);
+            }
+            }
+        }
+        } else {
+        let [tokenResponse, tokenError] = await this.AuthenticateUser();
+        if (!tokenError) console.log(tokenResponse);
+        else {
+            console.log("Invalid User Tokens Provided");
+            console.log(tokenError);
+        }
+        }
+    }
 
     /* Discovery APIs */
 

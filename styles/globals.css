@@ -184,3 +184,17 @@ a {
     padding-right: 1.5rem;
   }
 }
+
+.MuiStep-horizontal .MuiStepLabel-labelContainer   {
+  color: rgb(156 163 175 );
+}
+
+
+.MuiStepLabel-label.Mui-completed,  .MuiStepLabel-label.Mui-active{
+    color: white !important
+}
+
+.MuiOutlinedInput-root{
+  color: white !important;
+  border-color: white;
+}

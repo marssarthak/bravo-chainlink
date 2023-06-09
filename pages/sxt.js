@@ -12,12 +12,9 @@ import {
 import Utils from "../utils/utils-functions.js";
 import  {biscuit, block, authorizer, Biscuit, KeyPair, Fact, PrivateKey, PublicKey} from '../biscuit-wasm/module/biscuit.js';
 import SQLOperation from "../BiscuitConstants.js";
-import fs, { access, write } from "fs";
 import * as dotenv from "dotenv";
 dotenv.config();
 export default function sxt() {
-
-  console.log(biscuit)
   const initSDK = SpaceAndTimeSDK.init();
   let userId = process.env.NEXT_PUBLIC_USERID;
   let joinCode = process.env.NEXT_PUBLIC_JOINCODE;
@@ -42,8 +39,8 @@ export default function sxt() {
     console.log(createSchemaResponse, createSchemaError);
   }
   const createTable = async() => {
-    let resourceId = "LINKO2.USERS";
-    let createSqlText = `CREATE TABLE LINKO2.USERS (wallet_address VARCHAR(255) PRIMARY KEY, username VARCHAR(50), email VARCHAR(255),fullname VARCHAR(100))`
+    let resourceId = "LINKO.USERS";
+    let createSqlText = `CREATE TABLE LINKO.USERS (wallet_address VARCHAR(255) PRIMARY KEY, username VARCHAR(50), email VARCHAR(255),fullname VARCHAR(100))`
     let accessType = "public_append";
 
     const biscuitPrivateKey = process.env.NEXT_PUBLIC_BISCUIT_PRIVATEKEY;
@@ -56,13 +53,71 @@ export default function sxt() {
   }
 
 
+  const read = async() => {
+    let scope = "ALL";
+    let namespace = "LINKO";
+    let owned = true;
+    let column = "BLOCK_NUMBER";
+    let tableName = "FUNGIBLETOKEN_WALLET";
+    
+    /** Calls to Discovery APIs **/
+    let [getTableResponse, getTableError] = await initSDK.getTables(scope,namespace);
+    console.log(getTableResponse, getTableError);
+    
+  }
+  const getUsers = async() => {
+    let selectSqlStatement = "SELECT * FROM LINKO.USERS WHERE USERNAME='GEMINI'"
+    let resourceId = "LINKO.USERS";
+    const biscuitPrivateKey = process.env.NEXT_PUBLIC_BISCUIT_PRIVATEKEY;
+    const biscuitToken = generateBiscuit(resourceId, biscuitPrivateKey);   
+
+    let [DQLResponse, DQLError] = await initSDK.DQL(resourceId, selectSqlStatement, biscuitToken);
+    console.log(DQLResponse, DQLError);
+  }
+
+  const checkUsernameExist = async(username) => {
+    let selectSqlStatement = `SELECT * FROM LINKO.USERS WHERE USERNAME='${username.toUpperCase()}'`
+    let resourceId = "LINKO.USERS";
+    const biscuitPrivateKey = process.env.NEXT_PUBLIC_BISCUIT_PRIVATEKEY;
+    const biscuitToken = generateBiscuit(resourceId, biscuitPrivateKey);   
+    try{
+      let [DQLResponse, DQLError] = await initSDK.DQL(resourceId, selectSqlStatement, biscuitToken);
+      console.log(DQLResponse, DQLError);
+    }
+
+    catch(e){
+      console.log(e)
+    }
+
+  }
+ 
 
   useEffect(() => {
     console.log("creating table")
-    createTable()
+    // read() 
+    getUsers()
+    // GetTokens();
+    // createTable()
+    // login(
+    //   "0x61edcdf5bb737adffe5043706e7c5bb1f1a56eea",
+    //   "Gemini",
+    //   "gemini@gmail.com",
+    //   "Gemini account"
+    // )
     // createSchema()
+
   }, [])
 
+
+  async function login (address, username, email, name) {
+    let resourceId = "LINKO.USERS";
+    const biscuitPrivateKey = process.env.NEXT_PUBLIC_BISCUIT_PRIVATEKEY;
+    const biscuitToken = generateBiscuit(resourceId, biscuitPrivateKey);   
+
+    let insertSqlText = `INSERT INTO LINKO.USERS VALUES('${address}', '${username}', '${email}', '${name}')`
+    let [DMLResponse, DMLError] = await initSDK.DML(resourceId, insertSqlText, biscuitToken);
+    console.log(DMLResponse, DMLError);
+  }
 
   let generateBiscuit = (resourceId, hexPrivateKey, biscuitOperation = "") => {
     Utils.checkPostgresIdentifier(resourceId);
@@ -130,7 +185,6 @@ export default function sxt() {
     }
   }
 
-  GetTokens();
 
   return <div>sxt</div>;
 }
