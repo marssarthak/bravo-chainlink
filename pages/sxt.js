@@ -39,8 +39,8 @@ export default function sxt() {
     console.log(createSchemaResponse, createSchemaError);
   }
   const createTable = async() => {
-    let resourceId = "LINKO.USERS";
-    let createSqlText = `CREATE TABLE LINKO.USERS (wallet_address VARCHAR(255) PRIMARY KEY, username VARCHAR(50), email VARCHAR(255),fullname VARCHAR(100))`
+    let resourceId = "LINKO.DATA";
+    let createSqlText = `CREATE TABLE LINKO.DATA (cid VARCHAR(255) PRIMARY KEY, wallet_address VARCHAR(255), username VARCHAR(50), date VARCHAR(50), price DECIMAL(10, 2), name VARCHAR(100), desc VARCHAR, id INT)`
     let accessType = "public_append";
 
     const biscuitPrivateKey = process.env.NEXT_PUBLIC_BISCUIT_PRIVATEKEY;
@@ -61,12 +61,14 @@ export default function sxt() {
     let tableName = "FUNGIBLETOKEN_WALLET";
     
     /** Calls to Discovery APIs **/
-    let [getTableResponse, getTableError] = await initSDK.getTables(scope,namespace);
-    console.log(getTableResponse, getTableError);
+    // let [getTableResponse, getTableError] = await initSDK.getTables(scope,namespace);
+    // console.log(getTableResponse, getTableError);
+    let [getTableColumnResponse, getTableColumnError] = await initSDK.getTableColumns(namespace, "FILES");
+console.log(getTableColumnResponse, getTableColumnError);
     
   }
   const getUsers = async() => {
-    let selectSqlStatement = "SELECT * FROM LINKO.USERS WHERE USERNAME='GEMINI'"
+    let selectSqlStatement = "SELECT * FROM LINKO.USERS"
     let resourceId = "LINKO.USERS";
     const biscuitPrivateKey = process.env.NEXT_PUBLIC_BISCUIT_PRIVATEKEY;
     const biscuitToken = generateBiscuit(resourceId, biscuitPrivateKey);   
@@ -90,12 +92,24 @@ export default function sxt() {
     }
 
   }
- 
+
+  async function put () {
+    let resourceId = "LINKO.FILES";
+    const biscuitPrivateKey = process.env.NEXT_PUBLIC_BISCUIT_PRIVATEKEY;
+    const biscuitToken = generateBiscuit(resourceId, biscuitPrivateKey);   
+
+    let insertSqlText = `INSERT INTO LINKO.FILES (wallet_address, username,date, price, name, desc) VALUES('0xabcxd', 'mars','1212121', 12.12,'sarthak','naah')`
+    let [DMLResponse, DMLError] = await initSDK.DML(resourceId, insertSqlText, biscuitToken);
+    console.log(DMLResponse, DMLError);
+  }
+
+
 
   useEffect(() => {
     console.log("creating table")
+    // put()
     // read() 
-    getUsers()
+    // getUsers()
     // GetTokens();
     // createTable()
     // login(

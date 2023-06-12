@@ -1,52 +1,163 @@
 import { Navbar } from "@/components/navbar";
 import { Sidebar } from "@/components/sidebar";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Database } from "@tableland/sdk";
-import Link from "next/link";
+import { ethers } from "ethers";
+import lighthouse from "@lighthouse-web3/sdk";
+import { nftContractAddress, nftContractAbi } from "../../config.js";
+import web3modal from "web3modal";
+import Loader from "@/components/Loader.jsx";
+import { addLinko } from "../sqls/query.js";
 
 export default function Home() {
-  const db = new Database();
-  const tableName = "linko_links_80001_6226";
   const [backlink, setBacklink] = useState("");
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState();
-  const createLink = (e) => {
-    e.preventDefault();
-    setLink(backlink);
-  };
-
   const [location, setLocation] = useState();
   useEffect(() => {
     setLocation(window.location);
   }, []);
 
-  console.log(location);
+  const [formData, setFormData] = useState({
+    "filename": "file1",
+    "price": "0.12",
+    "description": "description",
+    "cid": "QmRm3YWjwKwuA7GfNchVz3nGPzz1Dcc9HF7wQz5kXdpY36",
+    "linkId": 10
+});
+  // const [formData, setFormData] = useState({
+  //   filename: "",
+  //   price: "",
+  //   description: "",
+  //   cid: "",
+  //   linkId: ""
+  // });
 
-  console.log("data is",data)
+  const db = new Database();
+  const tableName = "linko_links_80001_6226";
 
+  const lighthouseKey = process.env.NEXT_PUBLIC_LIGHTHOUSE_KEY;
 
-  const setLink = async (id) => {
+  const encryptionSignature = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const address = await signer.getAddress();
+    const messageRequested = (await lighthouse.getAuthMessage(address)).data
+      .message;
+    const signedMessage = await signer.signMessage(messageRequested);
+    return {
+      signedMessage: signedMessage,
+      publicKey: address,
+    };
+  };
+
+  const progressCallback = (progressData) => {
+    let percentageDone =
+      100 - (progressData?.total / progressData?.uploaded)?.toFixed(2);
+    console.log(percentageDone);
+  };
+
+  // main function
+  const uploadFileEncrypted = async (e) => {
     setLoading(true);
+    const sig = await encryptionSignature();
+    const response = await lighthouse.uploadEncrypted(
+      e,
+      lighthouseKey,
+      sig.publicKey,
+      sig.signedMessage,
+      progressCallback
+    );
+    console.log(response);
+
+    applyAccessConditions(response.data.Hash);
+    const linkId = await getLinkoId();
+    setLoading(false);
+
+    setFormData({
+      ...formData,
+      cid: response.data.Hash,
+      linkId: (+linkId +1)
+    })
+  };
+
+  const getLinkoId = async () => {
+    const modal = new web3modal();
+    const connection = await modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+
+    const contract = new ethers.Contract(
+      nftContractAddress,
+      nftContractAbi,
+      provider
+    );
+
+    const data = await contract.linkoId();
+    return data;
+  };
+
+  const applyAccessConditions = async (cid) => {
+    const conditions = [
+      {
+        id: 1,
+        chain: "mumbai",
+        method: "balanceOf",
+        standardContractType: "ERC721",
+        contractAddress: nftContractAddress,
+        returnValueTest: { comparator: ">=", value: "1" },
+        parameters: [":userAddress"],
+      },
+    ];
+
+    const aggregator = "([1])";
+    const { publicKey, signedMessage } = await encryptionSignature();
+
+    const response = await lighthouse.applyAccessCondition(
+      publicKey,
+      cid,
+      signedMessage,
+      conditions,
+      aggregator
+    );
+
+    console.log(response);
+  };
+
+  const setViewCollection = async () => {
+    const modal = new web3modal();
+    const connection = await modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(
+      nftContractAddress,
+      nftContractAbi,
+      signer
+    );
+
+    const price_ = ethers.utils.parseEther(formData.price);
+
+    const tx = await contract.setViewCollection(formData.cid, price_);
+    await tx.wait();
+    console.log(tx);
+  };
+
+
+  const handelSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true);
+    // await setViewCollection();
     try {
-      // Insert a row into the table
-      const { meta: insert } = await db
-        .prepare(`INSERT INTO ${tableName} (id, link) VALUES (?, ?);`)
-        .bind(id, location.origin+ "/defaultRoute")
-        .run();
-
-      // Wait for transaction finality
-      await insert.txn.wait();
-
-      // Perform a read query, requesting all rows from the table
-      const { results } = await db.prepare(`SELECT * FROM ${tableName};`).all();
-
-      setData(results[results.length-1])
+      const d = new Date();
+      await addLinko(formData.cid, "0x1234", "mars", d.toISOString(), formData.price, formData.filename, formData.description, formData.linkId)
+      
       setLoading(false);
     } catch (e) {
       setLoading(false);
       console.log(e);
     }
   };
+
+  console.log(formData);
 
   return (
     <div>
@@ -56,117 +167,161 @@ export default function Home() {
         <div className="p-4 sm:ml-64 pt-20 bg-gray-900 w-full h-screen">
           <div className="text-white">
             <div className="mt-10">
-              <h1 className="font-bold text-3xl text-center">
-                Generate a Link
-              </h1>
+              <h1 className="font-bold text-3xl text-center mb-4">Host a File</h1>
             </div>
+            <div className="block w-3/4 relative p-6 mx-auto cursor-pointer border rounded-lg shadow bg-gray-800 border-gray-700">
+              <div className="relative px-10 py-10">
+                <div>
+                  <form
+                    onSubmit={handelSubmit}
+                    noValidate=""
+                    className="flex flex-col gap-4"
+                  >
+                    <div className="flex w-full gap-6">
+                      <div className="flex-1">
+                        <label
+                          htmlFor="email"
+                          className="ml-2 mb-2 block text-sm font-semibold"
+                        >
+                          File Name
+                        </label>
+                        <div className="relative">
+                          <input
+                            id="entryContract"
+                            className="input-error border-gel-accent border px-6 py-3 form-input"
+                            name="entryContract"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                filename: e.target.value,
+                              })
+                            }
+                            value={formData.filename}
+                          />
+                        </div>
+                        {/* <div className="p-2 text-sm text-gel-accent first-letter:capitalize">
+                  This field is required
+                </div> */}
+                      </div>
+                      <div className="flex-1">
+                        <label
+                          htmlFor="email"
+                          className="ml-2 mb-2 block text-sm font-semibold"
+                        >
+                          Price
+                        </label>
+                        <div className="relative">
+                          <input
+                            id="price"
+                            type="number"
+                            className="input-error border-gel-accent border px-6 py-3 form-input"
+                            name="price"
+                            value={formData.price}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                price: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+                        {/* <div className="p-2 text-sm text-gel-accent first-letter:capitalize">
+                  This field is required
+                </div> */}
+                      </div>
+                    </div>
 
-            <div className="mt-8 w-3/4 mx-auto">
-              <form onSubmit={createLink}>
-                <div className="flex">
-                  <div className="flex-shrink-0 cursor-default z-10 inline-flex items-center py-4 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-l-lg focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700  dark:focus:ring-gray-700 dark:text-gray-400 dark:border-gray-600">
-                    {location?.host}
-                  </div>
-                  <div className="relative w-full">
-                    <input
-                      type="search"
-                      className="block p-4 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg border-l-gray-50 border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-l-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
-                      placeholder="Your custom back-link..."
-                      required=""
-                      value={backlink}
-                      onChange={(e) => {
-                        setBacklink(e.target.value);
-                      }}
-                    />
-                    <button
-                      type="submit"
-                      className="absolute top-0 right-0 p-4 text-sm font-medium text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    >
-                      {
-                      !loading
-                      ? <svg
-                                              className="w-5 h-5"
-                                              fill="currentColor"
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              height="40"
-                                              viewBox="0 96 960 960"
-                                              width="40s"
-                                            >
-                                              <path d="M450 856V606H200v-60h250V296h60v250h250v60H510v250h-60Z" />
-                                            </svg>
-                      :  <svg aria-hidden="true" role="status" className="inline w-4 h-4 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
-                      <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
-                      </svg>
-                                        }
-                      <span className="sr-only">Search</span>
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-          {
-          data
-          ? <div className="mt-24">
-                      <div className="block w-3/4 p-6 mx-auto bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-                        <div className="flex justify-between">
-                          <div>
-                            <a
-                              target="_blank"
-                              className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-                              href={location?.origin + "/" + data.id}
-                            >
-                              {location?.origin + "/" + data.id}
-                            </a>
-                            <button
-                              type="button"
-                              onClick={() => navigator.clipboard.writeText(location?.origin + "/" + data.id)}
-                              className="w-[30px] h-[30px] ml-3 text-gray-500 bg-white rounded-full border border-gray-200 dark:border-gray-600 hover:text-gray-900 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400"
-                            >
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="ml-2 mb-2 block text-sm font-semibold"
+                      >
+                        Description
+                      </label>
+                      <div className="relative">
+                        <input
+                          id="description"
+                          className="input-error border-gel-accent border px-6 py-3 form-input"
+                          name="description"
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              description: e.target.value,
+                            })
+                          }
+                          value={formData.description}
+                        />
+                      </div>
+                      {/* <div className="p-2 text-sm text-gel-accent first-letter:capitalize">
+                  This field is required
+                </div> */}
+                    </div>
+
+                    <div>
+                      <p className="ml-2 mb-2 block text-sm font-semibold">
+                        Choose File
+                      </p>
+                      <div className="flex ">
+                        <div className="flex items-center justify-center w-full">
+                          <label
+                            htmlFor="dropzone-file"
+                            className="flex flex-col items-center justify-center w-full capa h-64 border-2 border-dashed rounded-lg cursor-pointerbg-gray-800"
+                          >
+                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
                               <svg
                                 aria-hidden="true"
-                                className="w-5 h-5 mx-auto mt-1"
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
-                                <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z" />
-                              </svg>
-                            </button>
-                          </div>
-                          <div>
-                            <Link
-                              href="/app/manage"
-                              className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                            >
-                              Add Routes
-                              <svg
-                                aria-hidden="true"
-                                className="w-4 h-4 ml-2 -mr-1"
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
+                                className="w-10 h-10 mb-3 text-gray-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg"
                               >
                                 <path
-                                  fill-rule="evenodd"
-                                  d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                                  clip-rule="evenodd"
-                                ></path>
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                                />
                               </svg>
-                            </Link>
-                          </div>
+                              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                <span className="font-semibold">
+                                  Click to upload
+                                </span>{" "}
+                                or drag and drop
+                              </p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
+                                SVG, PNG, JPG or GIF (MAX. 800x400px)
+                              </p>
+                            </div>
+                            <input
+                              onChange={uploadFileEncrypted}
+                              id="dropzone-file"
+                              type="file"
+                              className="hidden"
+                            />
+                          </label>
                         </div>
-          
-                        <p className="font-normal text-gray-700 dark:text-gray-400 mt-2">
-                          You have successfully generate a linko. To add routes, click on
-                          Manage button
-                        </p>
+                        {/* <div className="ml-6 flex-shrink-0 overflow-hidden rounded-md">
+                <img
+                  className="h-64 w-auto"
+                  src={imgBase64 || "./download.gif"}
+                  alt=""
+                />
+              </div> */}
                       </div>
                     </div>
-          : null
-          }
+                    <button
+                      type="submit"
+                      className="text-white mt-5 gradient-blue w-40 bg-[#4b507a] hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-3 mr-2 mb-2 dark:bg-[#4b507a] dark:hover:bg-slate-800 dark:focus:ring-gray-700 dark:border-gray-700"
+                    >
+                      Host
+                    </button>
+                  </form>
+                </div>
+                {loading ? <Loader /> : null}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -102,7 +102,7 @@ a {
 }
 
 .form-input{
-  background-color: #191919;
+  background-color: transparent;
   border-radius: 1rem;
   display: block;
   font-size: .875rem;

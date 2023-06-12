@@ -49,3 +49,15 @@ export async function registerUser (address, username, email, name) {
     console.log(DMLResponse, DMLError);
     return DMLResponse
 }
+
+export async function addLinko (cid, wallet_address, username, date, price, name, desc, id) {
+    await initSDK.GetTokens();
+    let resourceId = "LINKO.DATA";
+    const biscuitPrivateKey = process.env.NEXT_PUBLIC_BISCUIT_PRIVATEKEY;
+    const biscuitToken = generateBiscuit(resourceId, biscuitPrivateKey);   
+
+    let insertSqlText = `INSERT INTO LINKO.DATA (cid, wallet_address, username, date, price, name, desc, id) VALUES('${cid}', '${wallet_address}', '${username}', '${date}', ${price}, '${name}',  '${desc}',  '${id}', )`
+    let [DMLResponse, DMLError] = await initSDK.DML(resourceId, insertSqlText, biscuitToken);
+    console.log(DMLResponse, DMLError);
+    return DMLResponse
+}
