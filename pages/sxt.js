@@ -63,7 +63,7 @@ export default function sxt() {
     /** Calls to Discovery APIs **/
     // let [getTableResponse, getTableError] = await initSDK.getTables(scope,namespace);
     // console.log(getTableResponse, getTableError);
-    let [getTableColumnResponse, getTableColumnError] = await initSDK.getTableColumns(namespace, "FILES");
+    let [getTableColumnResponse, getTableColumnError] = await initSDK.getTableColumns(namespace, "USERS");
 console.log(getTableColumnResponse, getTableColumnError);
     
   }
@@ -108,7 +108,7 @@ console.log(getTableColumnResponse, getTableColumnError);
   useEffect(() => {
     console.log("creating table")
     // put()
-    // read() 
+    read() 
     // getUsers()
     // GetTokens();
     // createTable()

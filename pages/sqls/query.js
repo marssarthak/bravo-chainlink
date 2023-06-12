@@ -61,3 +61,20 @@ export async function addLinko (cid, wallet_address, username, date, price, name
     console.log(DMLResponse, DMLError);
     return DMLResponse
 }
+
+export async function getUsername (wallet_address) {
+    await initSDK.GetTokens();
+    let selectSqlStatement = `SELECT USERNAME FROM LINKO.USERS WHERE WALLET_ADDRESS='${wallet_address}'`
+    let resourceId = "LINKO.USERS";
+    const biscuitPrivateKey = process.env.NEXT_PUBLIC_BISCUIT_PRIVATEKEY;
+    const biscuitToken = generateBiscuit(resourceId, biscuitPrivateKey);   
+
+    let [DQLResponse, DQLError] = await initSDK.DQL(resourceId, selectSqlStatement, biscuitToken);
+    if (DQLError) return "";
+    if (DQLResponse.length > 0) {
+        return DQLResponse[0].USERNAME
+    }
+    else{
+        return ""
+    }
+}
