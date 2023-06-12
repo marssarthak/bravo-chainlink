@@ -78,3 +78,27 @@ export async function getUsername (wallet_address) {
         return ""
     }
 }
+
+export async function getDataFromAddress (wallet_address) {
+    await initSDK.GetTokens();
+    let selectSqlStatement = `SELECT * FROM LINKO.DATA WHERE WALLET_ADDRESS='${wallet_address}'`
+    let resourceId = "LINKO.DATA";
+    const biscuitPrivateKey = process.env.NEXT_PUBLIC_BISCUIT_PRIVATEKEY;
+    const biscuitToken = generateBiscuit(resourceId, biscuitPrivateKey);   
+
+    let [DQLResponse, DQLError] = await initSDK.DQL(resourceId, selectSqlStatement, biscuitToken);
+    return [DQLResponse, DQLError];
+}
+
+
+export async function getDataFromusername (USERNAME) {
+    await initSDK.GetTokens();
+    let selectSqlStatement = `SELECT * FROM LINKO.DATA WHERE USERNAME='${USERNAME}'`
+    let resourceId = "LINKO.DATA";
+    const biscuitPrivateKey = process.env.NEXT_PUBLIC_BISCUIT_PRIVATEKEY;
+    const biscuitToken = generateBiscuit(resourceId, biscuitPrivateKey);   
+
+    let [DQLResponse, DQLError] = await initSDK.DQL(resourceId, selectSqlStatement, biscuitToken);
+    return [DQLResponse, DQLError];
+}
+

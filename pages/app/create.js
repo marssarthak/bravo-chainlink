@@ -176,8 +176,8 @@ export default function Home() {
       const d = new Date();
       await addLinko(
         formData.cid,
-        "0x1234",
-        "mars",
+        userData.address,
+        userData.username,
         d.toISOString(),
         formData.price,
         formData.filename,

@@ -54,7 +54,7 @@ export function Sidebar() {
               <span className="flex-1 ml-3 whitespace-nowrap">Manage</span>
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link
               href="/app/nfts"
               className={"flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 " + (isActive("/app/nfts") ?"bg-gray-700" : "")}
@@ -71,7 +71,7 @@ export function Sidebar() {
               </svg>
               <span className="flex-1 ml-3 whitespace-nowrap">Paid Files</span>
             </Link>
-          </li>
+          </li> */}
         </ul>
       </div>
     </aside>
