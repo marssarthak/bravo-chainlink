@@ -13,7 +13,7 @@ import { Sidebar } from "@/components/sidebar";
 import { ConnectKitButton } from "connectkit";
 import Username from "@/components/username";
 import DetailsInput from "@/components/DetailsInput";
-import { registerUser } from "./sqls/query";
+import { registerUser } from "../sqls/query";
 
 export default function Home() {
   const [location, setLocation] = useState();

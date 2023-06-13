@@ -1,8 +1,8 @@
 import SpaceAndTimeSDK from "@/SpaceAndTimeSDK.js";
 
 import Utils from "@/utils/utils-functions.js";
-import  {biscuit, block, authorizer, Biscuit, KeyPair, Fact, PrivateKey, PublicKey} from '../../biscuit-wasm/module/biscuit.js';
-import SQLOperation from "../../BiscuitConstants.js";
+import  {biscuit, block, authorizer, Biscuit, KeyPair, Fact, PrivateKey, PublicKey} from '../biscuit-wasm/module/biscuit.js';
+import SQLOperation from "../BiscuitConstants.js";
 
 
 const initSDK = SpaceAndTimeSDK.init();

@@ -5,7 +5,7 @@ import { upload } from "@spheron/browser-upload";
 import { useState } from "react";
 import { Database } from "@tableland/sdk";
 // import LinkCard from "@/components/linkCard";
-import { getDataFromAddress, getUsername } from "../sqls/query";
+import { getDataFromAddress, getUsername } from "../../sqls/query";
 import { ethers } from "ethers";
 import LoginButton from "@/components/LoginButton";
 
@@ -141,7 +141,7 @@ export default function Dashboard() {
           <div className="p-4 sm:ml-64 pt-20 bg-gray-900 w-full min-h-screen">
             <h2 className="text-center text-4xl font-bold mt-4">Your Files</h2>
             {linkData.map((item, index) => {
-              return <LinkoCard item={item} />;
+              return <LinkoCard key={item.ID} item={item} />;
             })}
           </div>
         ) : (

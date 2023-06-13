@@ -6,7 +6,7 @@ import { saveAs } from "file-saver";
 import web3modal from "web3modal";
 import { Navbar } from "@/components/navbar.jsx";
 import { Sidebar } from "@/components/sidebar.jsx";
-import { getDataFromusername } from "./sqls/query";
+import { getDataFromusername } from "../sqls/query.js";
 import { useRouter } from "next/router.js";
 export default function Decrypt() {
   const [fileURL, setFileURL] = useState(null);

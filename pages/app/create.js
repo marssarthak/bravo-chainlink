@@ -7,7 +7,7 @@ import lighthouse from "@lighthouse-web3/sdk";
 import { nftContractAddress, nftContractAbi } from "../../config.js";
 import web3modal from "web3modal";
 import Loader from "@/components/Loader.jsx";
-import { addLinko, getUsername } from "../sqls/query.js";
+import { addLinko, getUsername } from "../../sqls/query.js";
 import { useAccount } from "wagmi";
 import LoginButton from "@/components/LoginButton.js";
 
