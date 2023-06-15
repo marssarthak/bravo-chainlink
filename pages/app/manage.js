@@ -139,7 +139,13 @@ export default function Dashboard() {
         <Sidebar />
         {isLoggedIn ? (
           <div className="p-4 sm:ml-64 pt-20 bg-gray-900 w-full min-h-screen">
-            <h2 className="text-center text-4xl font-bold mt-4">Your Files</h2>
+            <div className="relative">
+              <h2 className="text-center text-4xl font-bold mt-4">Your Files</h2>
+              <button  onClick={() => navigator.clipboard.writeText(location.origin + "/" + userData.username)} className=" items-center absolute right-0 top-0  p-2 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 bg-blue-500 block text-white">
+                Share
+              </button>
+            </div>
+
             {linkData.map((item, index) => {
               return <LinkoCard key={item.ID} item={item} />;
             })}

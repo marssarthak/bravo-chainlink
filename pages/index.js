@@ -120,7 +120,7 @@ export default function Home() {
                                     <span>Generate Links</span>
                                 </div>
                                 <div className="mt-6 flex-1 text-lg font-bold transition-all delay-75 duration-200 group-hover:-translate-y-5 group-hover:scale-105 group-hover:opacity-0">
-                                    Linko is the platform that allows you to
+                                    Blavo is the platform that allows you to
                                     create links and then add redirects to them.
                                     This way you can always give that one link
                                     without any hesitation of malfunctioning to
